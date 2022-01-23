@@ -1,6 +1,5 @@
-#!/bin/sh
+#!/bin/awk -f
 
-awk '
 { 
   s[NR] += $1
   s[NR-1] += $1
@@ -14,5 +13,3 @@ END {
   }
   print inc
 }
-
-' input
