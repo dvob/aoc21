@@ -19,11 +19,11 @@ var exampleInput = `7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8
 20 11 10 24  4
 14 21 16 12  6
 
+14 21 17 24  4
 10 16 15  9 19
 18  8 23 26 20
 22 11 13  6  5
- 2  0 12  3  7
-14 21 17 24  4`
+ 2  0 12  3  7`
 
 func Test_part1(t *testing.T) {
 	b := bytes.NewBufferString(exampleInput)
@@ -55,4 +55,26 @@ func Test_part1(t *testing.T) {
 		t.Fatalf("expected result to be 4512. got=%d", result)
 	}
 
+}
+
+func Test_part2(t *testing.T) {
+	b := bytes.NewBufferString(exampleInput)
+
+	boards, numbers, err := read(b)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	score, number, result := findLastWinner(numbers, boards)
+
+	if number != 13 {
+		t.Fatalf("expected 13 as winning number. got=%d", number)
+	}
+	if score != 148 {
+		t.Fatalf("expected score to be 148. got=%d", score)
+	}
+
+	if result != 1924 {
+		t.Fatalf("expected result to be 1924. got=%d", result)
+	}
 }

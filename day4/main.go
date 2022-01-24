@@ -12,6 +12,10 @@ import (
 
 type board [5][5]uint8
 
+// func (b *board) isLoser(occured []uint8) bool {
+// 	return !b.hasRowWinner(occured) && !b.hasColWinner(occured)
+// }
+
 func (b *board) hasWinner(occured []uint8) bool {
 	return b.hasRowWinner(occured) || b.hasColWinner(occured)
 }
@@ -95,11 +99,24 @@ func findWinnerAll(numbers []uint8, boards []board) (score int, winningNumber ui
 	for i := 1; i <= len(numbers); i++ {
 		winners := findWinner(numbers[:i], boards)
 		if len(winners) != 0 {
-			fmt.Println(boards[winners[0]])
 			score = boards[winners[0]].score(numbers[:i])
 			winningNumber = numbers[i-1]
 			result = score * int(winningNumber)
 			return
+		}
+	}
+	return 0, 0, 0
+}
+
+func findLastWinner(numbers []uint8, boards []board) (score int, winningNumber uint8, result int) {
+	for i := len(numbers); i >= 1; i-- {
+		for _, board := range boards {
+			if !board.hasWinner(numbers[:i]) {
+				score = board.score(numbers[:i+1])
+				winningNumber = numbers[i]
+				result = score * int(winningNumber)
+				return
+			}
 		}
 	}
 	return 0, 0, 0
@@ -159,14 +176,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, board := range boards {
-		fmt.Println(board)
-	}
-	fmt.Println(len(boards))
 
+	fmt.Println("--- part 1 ---")
 	score, number, result := findWinnerAll(numbers, boards)
-
 	fmt.Println("number", number)
 	fmt.Println("score", score)
 	fmt.Println("result", result)
+
+	fmt.Println("--- part 2 ---")
+	score, number, result = findLastWinner(numbers, boards)
+	fmt.Println("number", number)
+	fmt.Println("score", score)
+	fmt.Println("result", result)
+
 }
