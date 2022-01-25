@@ -7,7 +7,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"sort"
 )
 
 func main() {
@@ -126,14 +125,16 @@ func intsToInt(ints []int) int {
 }
 
 func solvePartOne(notes []note) int {
-	var count [7]int
+	count := 0
 	for _, note := range notes {
 		for _, output := range note.outputs {
-			count[len(output)-1] += 1
+			l := len(output)
+			if l == 2 || l == 4 || l == 3 || l == 7 {
+				count++
+			}
 		}
 	}
-	// 1 + 4 + 7 + 8
-	return count[1] + count[3] + count[2] + count[6]
+	return count
 }
 
 func readInput(input io.Reader) ([]note, error) {
@@ -143,13 +144,9 @@ func readInput(input io.Reader) ([]note, error) {
 	for s.Scan() {
 		data := make([]byte, len(s.Bytes()))
 		copy(data, s.Bytes())
-
 		parts := bytes.SplitN(data, []byte{'|'}, 2)
 		inputs := bytes.Fields(parts[0])
 		outputs := bytes.Fields(parts[1])
-		for _, tmp := range append(inputs, outputs...) {
-			sort.Slice(tmp, func(i int, j int) bool { return tmp[i] < tmp[j] })
-		}
 		notes = append(notes, note{inputs, outputs})
 	}
 	if s.Err() != nil {
